@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>LD Performance Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    font-family: system-ui, sans-serif;
+    margin: 0;
+    background: #0b0f14;
+    color: #e6e6e6;
+}
+
+header {
+    padding: 20px;
+    background: #111826;
+    border-bottom: 1px solid #1f2a3a;
+}
+
+h1 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.card {
+    background: #111826;
+    border: 1px solid #1f2a3a;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.small {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+canvas {
+    width: 100% !important;
+    height: 400px !important;
+}
+
+.game {
+    padding: 10px;
+    border-bottom: 1px solid #1f2a3a;
+}
+
+.game:last-child {
+    border-bottom: none;
+}
+
+.badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 5px;
+    background: #1f2a3a;
+    font-size: 11px;
+    margin-left: 5px;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.thumb {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #2a3a4f;
+}
+
+table {
+    font-size: 13px;
+}
+
+th {
+    color: #cbd5e1;
+    font-weight: 600;
+    padding: 6px;
+}
+
+td {
+    padding: 6px;
+    vertical-align: top;
+}
+
+tr:hover {
+    background: #0f1722;
+}
+
+.chart-wrap {
+    height: 160px;
+    position: relative;
+    margin-top: 10px;
+}
+
+.chart-wrap canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🎮 Ludum Dare Performance Dashboard</h1>
+    <div class="small">Interactive review of your game jam history</div>
+</header>
+
+<div class="container">
+
+    <div class="grid">
+
+        <div class="card">
+            <h3>🏆 Latest Game</h3>
+            <div id="latest"></div>
+        </div>
+
+        <div class="card">
+            <h3>⭐ Best by Category</h3>
+            <div id="best"></div>
+        </div>
+
+    </div>
+
+    <div class="card">
+        <h3>📜 All Games</h3>
+        <div id="history"></div>
+    </div>
+
+</div>
+
+<script>
+
+let data = null;
+
+fetch("ld_data.json")
+    .then(r => r.json())
+    .then(d => {
+        data = d;
+        build();
+    });
+
+function avg(game, cat) {
+    return game.ratings?.[cat]?.avg ?? null;
+}
+
+function result(game, cat) {
+    return game.ratings?.[cat]?.place ?? null;
+}
+
+function percentile(game, cat) {
+    return game.ratings?.[cat]?.percentile ?? null;
+}
+
+function build() {
+
+    const games = data.filter(g => g.ratings);
+
+    // sort by LD number
+    games.sort((a,b) => a.ld - b.ld);
+
+    const cats = ["overall","fun","innovation","theme","graphics","audio","humor","mood"];
+
+    function series(games, cat, fn) {
+        return games.map(g => fn(g, cat));
+    }
+
+    const ctx = document.getElementById("chart");
+
+    const datasets = cats.map(cat => ({
+        label: cat,
+        data: games.map(g => avg(g, cat)),
+        borderWidth: 2,
+        tension: 0.3,
+        pointRadius: 4
+    }));
+
+    // ─────────────────────────────
+    // LATEST GAME
+    // ─────────────────────────────
+    const latest = games[games.length - 1];
+
+    document.getElementById("latest").innerHTML = `
+        <h4>${latest.game_name} <span class="badge">LD${latest.ld}</span></h4>
+        <div class="small">${latest.theme}</div>
+        <br/>
+
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr style="text-align:left; border-bottom:1px solid #2a3a4f;">
+                    <th>Category</th>
+                    <th>Avg</th>
+                    <th>Rank</th>
+                    <th>Percentile</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${cats.map(c => `
+                    <tr style="border-bottom:1px solid #1f2a3a;">
+                        <td>${c}</td>
+                        <td>${(avg(latest,c) ?? 0).toFixed(2)}</td>
+                        <td>${result(latest,c) ?? "-"}</td>
+                        <td>${percentile(latest,c) ?? "-"}</td>
+                    </tr>
+                `).join("")}
+            </tbody>
+        </table>
+    `;
+
+    // ─────────────────────────────
+    // BEST BY CATEGORY
+    // ─────────────────────────────
+    const best = document.getElementById("best");
+
+    best.innerHTML = `
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr style="text-align:left; border-bottom:1px solid #2a3a4f;">
+                    <th>Category</th>
+                    <th>Game</th>
+                    <th>Avg</th>
+                    <th>LD</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${cats.map(cat => {
+
+                    let bestGame = null;
+                    let bestVal = -1;
+
+                    games.forEach(g => {
+                        const v = avg(g, cat);
+                        if (v && v > bestVal) {
+                            bestVal = v;
+                            bestGame = g;
+                        }
+                    });
+
+                    if (!bestGame) return "";
+
+                    return `
+                        <tr style="border-bottom:1px solid #1f2a3a;">
+                            <td>${cat}</td>
+                            <td>${bestGame.game_name}</td>
+                            <td>${bestVal.toFixed(2)}</td>
+                            <td>LD${bestGame.ld}</td>
+                        </tr>
+                    `;
+                }).join("")}
+            </tbody>
+        </table>
+    `;
+
+    // ─────────────────────────────
+    // HISTORY
+    // ─────────────────────────────
+    const hist = document.getElementById("history");
+
+    hist.innerHTML = cats.map((cat, i) => {
+
+        const values = games.map(g => avg(g, cat));
+        const pcts = games.map(g => percentile(g, cat));
+
+        const chartId = `chart_${cat}`;
+
+        return `
+            <div style="margin-bottom: 40px;">
+
+                <!-- CATEGORY ROW (games left → right) -->
+                <table style="width:100%; border-collapse: collapse; margin-bottom: 10px;">
+                    <thead>
+                        <tr style="text-align:left; border-bottom:1px solid #2a3a4f;">
+                            <th style="width:120px;">${cat}</th>
+                            ${games.map(g => `<th title="LD${g.ld}">${g.game_name}</th>`).join("")}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr style="border-bottom:1px solid #1f2a3a;">
+                            <td class="small">avg</td>
+                            ${values.map(v => `
+                                <td>${v ? v.toFixed(2) : "-"}</td>
+                            `).join("")}
+                        </tr>
+
+                        <tr>
+                            <td class="small">percentile</td>
+                            ${pcts.map(p => `
+                                <td class="small">p${p ?? "-"}</td>
+                            `).join("")}
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- CATEGORY CHART -->
+                <div class="chart-wrap">
+                    <canvas id="${chartId}"></canvas>
+                </div>
+            </div>
+        `;
+    }).join("");
+
+    cats.forEach(cat => {
+
+        const ctx = document.getElementById(`chart_${cat}`);
+
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: games.map(g => "LD" + g.ld),
+                datasets: [{
+                    label: cat,
+                    data: games.map(g => avg(g, cat)),
+                    borderWidth: 2,
+                    tension: 0.3,
+                    pointRadius: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: "#aaa" },
+                        grid: {
+                            color: "rgba(255,255,255,0.06)"
+                        }
+                    },
+                    y: {
+                        min: 0,
+                        max: 5,
+                        ticks: { color: "#aaa" },
+                        grid: {
+                            color: "rgba(255,255,255,0.06)"
+                        }
+                    }
+                }
+            }
+        });
+
+    });
+}
+
+</script>
+
+</body>
+</html>
