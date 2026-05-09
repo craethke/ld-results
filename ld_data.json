@@ -1,0 +1,457 @@
+[
+  {
+    "ld": 53,
+    "date": "Apr 2023",
+    "theme": "Delivery",
+    "game_name": "COLD CHEDDAR",
+    "game_url": "https://ldjam.com/events/ludum-dare/53/cold-cheddar",
+    "category": "game",
+    "event_stats": {
+      "total": 2308,
+      "jam": 1624,
+      "compo": 684,
+      "extra": 0
+    },
+    "total_for_percentile": 1624,
+    "ratings": {
+      "overall": {
+        "place": 763,
+        "avg": 3.419,
+        "ratings_received": null,
+        "percentile": 53.08
+      },
+      "fun": {
+        "place": 637,
+        "avg": 3.382,
+        "ratings_received": null,
+        "percentile": 60.84
+      },
+      "innovation": {
+        "place": 807,
+        "avg": 3.083,
+        "ratings_received": null,
+        "percentile": 50.37
+      },
+      "theme": {
+        "place": 304,
+        "avg": 4.171,
+        "ratings_received": null,
+        "percentile": 81.34
+      },
+      "graphics": {
+        "place": 339,
+        "avg": 4.053,
+        "ratings_received": null,
+        "percentile": 79.19
+      },
+      "audio": {
+        "place": 213,
+        "avg": 3.851,
+        "ratings_received": null,
+        "percentile": 86.95
+      },
+      "humor": {
+        "place": 667,
+        "avg": 2.958,
+        "ratings_received": null,
+        "percentile": 58.99
+      },
+      "mood": {
+        "place": 818,
+        "avg": 3.278,
+        "ratings_received": null,
+        "percentile": 49.69
+      }
+    }
+  },
+  {
+    "ld": 54,
+    "date": "Oct 2023",
+    "theme": "Entire Game on One Screen",
+    "game_name": "RIDE OF THE LIVING DEAD!",
+    "game_url": "https://ldjam.com/events/ludum-dare/54/ride-of-the-living-dead",
+    "category": "game",
+    "event_stats": {
+      "total": 2000,
+      "jam": 1400,
+      "compo": 520,
+      "extra": 80
+    },
+    "total_for_percentile": 1400,
+    "ratings": {
+      "overall": {
+        "place": 629,
+        "avg": 3.511,
+        "ratings_received": null,
+        "percentile": 55.14
+      },
+      "fun": {
+        "place": 717,
+        "avg": 3.245,
+        "ratings_received": null,
+        "percentile": 48.86
+      },
+      "innovation": {
+        "place": 503,
+        "avg": 3.436,
+        "ratings_received": null,
+        "percentile": 64.14
+      },
+      "theme": {
+        "place": 400,
+        "avg": 3.883,
+        "ratings_received": null,
+        "percentile": 71.5
+      },
+      "graphics": {
+        "place": 333,
+        "avg": 4.01,
+        "ratings_received": null,
+        "percentile": 76.29
+      },
+      "audio": {
+        "place": 411,
+        "avg": 3.467,
+        "ratings_received": null,
+        "percentile": 70.71
+      },
+      "humor": {
+        "place": 754,
+        "avg": 2.5,
+        "ratings_received": null,
+        "percentile": 46.21
+      },
+      "mood": {
+        "place": 269,
+        "avg": 3.872,
+        "ratings_received": null,
+        "percentile": 80.86
+      }
+    }
+  },
+  {
+    "ld": 55,
+    "date": "Apr 2024",
+    "theme": "Summoning",
+    "game_name": "SKELEMANCER",
+    "game_url": "https://ldjam.com/events/ludum-dare/55/skelemancer",
+    "category": "game",
+    "event_stats": {
+      "total": 2194,
+      "jam": 1543,
+      "compo": 564,
+      "extra": 87
+    },
+    "total_for_percentile": 1543,
+    "ratings": {
+      "overall": {
+        "place": 784,
+        "avg": 3.402,
+        "ratings_received": null,
+        "percentile": 49.25
+      },
+      "fun": {
+        "place": 556,
+        "avg": 3.475,
+        "ratings_received": null,
+        "percentile": 64.03
+      },
+      "innovation": {
+        "place": 672,
+        "avg": 3.269,
+        "ratings_received": null,
+        "percentile": 56.51
+      },
+      "theme": {
+        "place": 150,
+        "avg": 4.232,
+        "ratings_received": null,
+        "percentile": 90.34
+      },
+      "graphics": {
+        "place": 694,
+        "avg": 3.573,
+        "ratings_received": null,
+        "percentile": 55.09
+      },
+      "audio": {
+        "place": 259,
+        "avg": 3.744,
+        "ratings_received": null,
+        "percentile": 83.28
+      },
+      "humor": {
+        "place": 711,
+        "avg": 2.809,
+        "ratings_received": null,
+        "percentile": 53.99
+      },
+      "mood": {
+        "place": 721,
+        "avg": 3.434,
+        "ratings_received": null,
+        "percentile": 53.34
+      }
+    }
+  },
+  {
+    "ld": 56,
+    "date": "Oct 2024",
+    "theme": "Tiny Creatures",
+    "game_name": "SHIPWHACKED",
+    "game_url": "https://ldjam.com/events/ludum-dare/56/shipwhacked",
+    "category": "game",
+    "event_stats": {
+      "total": 1800,
+      "jam": 1270,
+      "compo": 450,
+      "extra": 80
+    },
+    "total_for_percentile": 1270,
+    "ratings": {
+      "overall": {
+        "place": 606,
+        "avg": 3.483,
+        "ratings_received": null,
+        "percentile": 52.36
+      },
+      "fun": {
+        "place": 475,
+        "avg": 3.483,
+        "ratings_received": null,
+        "percentile": 62.68
+      },
+      "innovation": {
+        "place": 368,
+        "avg": 3.517,
+        "ratings_received": null,
+        "percentile": 71.1
+      },
+      "theme": {
+        "place": 621,
+        "avg": 3.583,
+        "ratings_received": null,
+        "percentile": 51.18
+      },
+      "graphics": {
+        "place": 375,
+        "avg": 3.917,
+        "ratings_received": null,
+        "percentile": 70.55
+      },
+      "audio": {
+        "place": 577,
+        "avg": 3.0,
+        "ratings_received": null,
+        "percentile": 54.65
+      },
+      "humor": {
+        "place": 458,
+        "avg": 3.185,
+        "ratings_received": null,
+        "percentile": 64.02
+      },
+      "mood": {
+        "place": 448,
+        "avg": 3.617,
+        "ratings_received": null,
+        "percentile": 64.8
+      }
+    }
+  },
+  {
+    "ld": 57,
+    "date": "Apr 2025",
+    "theme": "Depths",
+    "game_name": "KILLWARE",
+    "game_url": "https://ldjam.com/events/ludum-dare/57/killware",
+    "category": "game",
+    "event_stats": {
+      "total": 1566,
+      "jam": 1100,
+      "compo": 400,
+      "extra": 66
+    },
+    "total_for_percentile": 1100,
+    "ratings": {
+      "overall": {
+        "place": 328,
+        "avg": 3.69,
+        "ratings_received": null,
+        "percentile": 70.27
+      },
+      "fun": {
+        "place": 374,
+        "avg": 3.466,
+        "ratings_received": null,
+        "percentile": 66.09
+      },
+      "innovation": {
+        "place": 484,
+        "avg": 3.172,
+        "ratings_received": null,
+        "percentile": 56.09
+      },
+      "theme": {
+        "place": 789,
+        "avg": 2.724,
+        "ratings_received": null,
+        "percentile": 28.36
+      },
+      "graphics": {
+        "place": 219,
+        "avg": 4.103,
+        "ratings_received": null,
+        "percentile": 80.18
+      },
+      "audio": {
+        "place": 220,
+        "avg": 3.69,
+        "ratings_received": null,
+        "percentile": 80.09
+      },
+      "humor": {
+        "place": 555,
+        "avg": 2.5,
+        "ratings_received": null,
+        "percentile": 49.64
+      },
+      "mood": {
+        "place": 416,
+        "avg": 3.603,
+        "ratings_received": null,
+        "percentile": 62.27
+      }
+    }
+  },
+  {
+    "ld": 58,
+    "date": "Oct 2025",
+    "theme": "Collector",
+    "game_name": "HATSTACK",
+    "game_url": "https://ldjam.com/events/ludum-dare/58/hatstack",
+    "category": "game",
+    "event_stats": {
+      "total": 1390,
+      "jam": 980,
+      "compo": 350,
+      "extra": 60
+    },
+    "total_for_percentile": 980,
+    "ratings": {
+      "overall": {
+        "place": 207,
+        "avg": 3.76,
+        "ratings_received": null,
+        "percentile": 78.98
+      },
+      "fun": {
+        "place": 104,
+        "avg": 3.86,
+        "ratings_received": null,
+        "percentile": 89.49
+      },
+      "innovation": {
+        "place": 170,
+        "avg": 3.64,
+        "ratings_received": null,
+        "percentile": 82.76
+      },
+      "theme": {
+        "place": 117,
+        "avg": 4.14,
+        "ratings_received": null,
+        "percentile": 88.16
+      },
+      "graphics": {
+        "place": 288,
+        "avg": 3.896,
+        "ratings_received": null,
+        "percentile": 70.71
+      },
+      "audio": {
+        "place": 187,
+        "avg": 3.66,
+        "ratings_received": null,
+        "percentile": 81.02
+      },
+      "humor": {
+        "place": 40,
+        "avg": 4.14,
+        "ratings_received": null,
+        "percentile": 96.02
+      },
+      "mood": {
+        "place": 200,
+        "avg": 3.854,
+        "ratings_received": null,
+        "percentile": 79.69
+      }
+    }
+  },
+  {
+    "ld": 59,
+    "date": "Apr 2026",
+    "theme": "Signal",
+    "game_name": "HORIZON'S CALL",
+    "game_url": "https://ldjam.com/events/ludum-dare/59/horizons-call",
+    "category": "game",
+    "event_stats": {
+      "total": 1400,
+      "jam": 980,
+      "compo": 360,
+      "extra": 60
+    },
+    "total_for_percentile": 980,
+    "ratings": {
+      "overall": {
+        "place": 358,
+        "avg": 3.655,
+        "ratings_received": null,
+        "percentile": 63.57
+      },
+      "fun": {
+        "place": 482,
+        "avg": 3.293,
+        "ratings_received": null,
+        "percentile": 50.92
+      },
+      "innovation": {
+        "place": 429,
+        "avg": 3.379,
+        "ratings_received": null,
+        "percentile": 56.33
+      },
+      "theme": {
+        "place": 238,
+        "avg": 4.052,
+        "ratings_received": null,
+        "percentile": 75.82
+      },
+      "graphics": {
+        "place": 256,
+        "avg": 4.067,
+        "ratings_received": null,
+        "percentile": 73.98
+      },
+      "audio": {
+        "place": 186,
+        "avg": 3.845,
+        "ratings_received": null,
+        "percentile": 81.12
+      },
+      "humor": {
+        "place": null,
+        "avg": null,
+        "ratings_received": null,
+        "percentile": null
+      },
+      "mood": {
+        "place": 249,
+        "avg": 3.931,
+        "ratings_received": null,
+        "percentile": 74.69
+      }
+    }
+  }
+]
