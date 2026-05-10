@@ -150,14 +150,173 @@ tr:hover {
 
 <script>
 
+async function api(path) {
+    const res = await fetch("https://api.ldjam.com/vx" + path);
+    return await res.json();
+}
+
+async function getUserId(username) {
+    const data = await api(`/node/walk/1/users/${username}`);
+    const path = data.path || [];
+    console.log("data: ", data);
+    return path.length ? path[path.length - 1] : null;
+}
+
+async function getUserGames(userId) {
+    const data = await api(`/node/feed/${userId}/authors/item/game?limit=100`);
+    return data.feed || [];
+}
+
+async function getGame(gameId) {
+    const data = await api(`/node2/get/${gameId}`);
+    return (data.node && data.node[0]) ? data.node[0] : null;
+}
+
+async function getEventNodeId(ld) {
+    const data = await api(`/node/walk/1/events/ludum-dare/${ld}`);
+    return data?.node;
+}
+
+async function getEventStats(eventNodeId) {
+    const data = await api(`/stats/${eventNodeId}`);
+
+    // structure varies slightly by LD event, so normalize safely
+    return {
+        jam:   data?.stats?.jam,
+        compo: data?.stats?.compo,
+        extra: data?.stats?.extra,
+        total: data?.stats?.game
+    };
+}
+
+const eventStatsCache = {};
+
+async function getStatsForLD(ld) {
+    if (eventStatsCache[ld]) return eventStatsCache[ld];
+
+    const eventNodeId = await getEventNodeId(ld);
+    const stats = await getEventStats(eventNodeId);
+
+    eventStatsCache[ld] = stats;
+    return stats;
+}
+
+async function getLoggedInUser() {
+    const data = await api(`/node2/getmy`);
+    return data?.node?.slug;
+}
+
+async function loadUser(username) {
+
+    const userId = await getUserId(username);
+    const gameStubs = await getUserGames(userId);
+
+    const fullGames = [];
+
+    for (const g of gameStubs) {
+
+        const node = await getGame(g.id);
+
+        if (!node?.path?.includes("/events/ludum-dare/")) continue;
+
+        fullGames.push(node);
+    }
+    console.log("fullGames: ", fullGames);
+
+    window.games = await Promise.all(
+        fullGames.map(n => normalizeGame(n))
+    );
+    console.log("games: ", window.games);
+
+    build();
+}
+
+function parseGrades(node) {
+
+    const gradeMap = {
+        "01": "overall",
+        "02": "fun",
+        "03": "innovation",
+        "04": "theme",
+        "05": "graphics",
+        "06": "audio",
+        "07": "humor",
+        "08": "mood",
+    };
+
+    const magic = node.magic || {};
+    const grades = {};
+
+    for (const [num, cat] of Object.entries(gradeMap)) {
+
+        const avg = magic[`grade-${num}-average`];
+        const result = magic[`grade-${num}-result`];
+
+        if (avg === undefined && result === undefined) continue;
+
+        grades[cat] = {
+            avg: avg ?? null,
+            result: result ?? null
+        };
+    }
+
+    return grades;
+}
+
+async function normalizeGame(node) {
+
+    const ld = getLD(node);
+    const stats = await getStatsForLD(ld);
+
+    const grades = parseGrades(node);
+    console.log("grades: ", grades);
+
+    const subtype = node.subsubtype || "jam";
+
+    const total =
+        subtype === "compo" ? stats.compo :
+        subtype === "extra" ? stats.extra :
+        stats.jam;
+
+    const ratings = {};
+
+    for (const cat of ["overall","fun","innovation","theme","graphics","audio","humor","mood"]) {
+
+        const g = grades[cat] || {};
+
+        ratings[cat] = {
+            avg: g.avg,
+            place: g.result
+        };
+    }
+
+    return {
+        id: node.id,
+        name: node.name,
+        ld,
+        path: node.path,
+        meta: node.meta,
+        subtype,
+        ratings,
+        total
+    };
+}
+
+function getLD(node) {
+    const m = node.path?.match(/ludum-dare\/(\d+)/);
+    return m ? Number(m[1]) : null;
+}
+
 let data = null;
 
-fetch("ld_data.json")
-    .then(r => r.json())
-    .then(d => {
-        data = d;
-        build();
-    });
+loadUser(new URLSearchParams(window.location.search)?.get('user') ?? "cody-raethke");
+
+// fetch("ld_data.json")
+//     .then(r => r.json())
+//     .then(d => {
+//         data = d;
+//         build();
+//     });
 
 function avg(game, cat) {
     return game.ratings?.[cat]?.avg ?? null;
@@ -168,17 +327,39 @@ function result(game, cat) {
 }
 
 function percentile(game, cat) {
-    return game.ratings?.[cat]?.percentile ?? null;
+    const r = game.ratings[cat];
+    const place = r?.place;
+    const total = game?.total;
+
+    if (!place || !total || total <= 0) return null;
+
+    // Clamp to valid range
+    const clampedPlace = Math.max(1, Math.min(place, total));
+
+    // Convert rank → percentile (higher is better)
+    const pct = (1 - (clampedPlace - 1) / total) * 100;
+
+    return Math.round(pct * 100) / 100;
 }
 
 function build() {
 
-    const games = data.filter(g => g.ratings);
+    const games = window.games.filter(g => g.ratings);
 
     // sort by LD number
     games.sort((a,b) => a.ld - b.ld);
 
     const cats = ["overall","fun","innovation","theme","graphics","audio","humor","mood"];
+    const cat_labels = {
+        "overall":    "Overall",
+        "fun":        "Fun",
+        "innovation": "Innovation",
+        "theme":      "Theme",
+        "graphics":   "Graphics",
+        "audio":      "Audio",
+        "humor":      "Humor",
+        "mood":       "Mood",
+    };
 
     function series(games, cat, fn) {
         return games.map(g => fn(g, cat));
@@ -187,7 +368,7 @@ function build() {
     const ctx = document.getElementById("chart");
 
     const datasets = cats.map(cat => ({
-        label: cat,
+        label: cat_labels[cat],
         data: games.map(g => avg(g, cat)),
         borderWidth: 2,
         tension: 0.3,
@@ -200,7 +381,7 @@ function build() {
     const latest = games[games.length - 1];
 
     document.getElementById("latest").innerHTML = `
-        <h4>${latest.game_name} <span class="badge">LD${latest.ld}</span></h4>
+        <h4>${latest.name} <span class="badge">LD${latest.ld}</span></h4>
         <div class="small">${latest.theme}</div>
         <br/>
 
@@ -216,7 +397,7 @@ function build() {
             <tbody>
                 ${cats.map(c => `
                     <tr style="border-bottom:1px solid #1f2a3a;">
-                        <td>${c}</td>
+                        <td>${cat_labels[c]}</td>
                         <td>${(avg(latest,c) ?? 0).toFixed(2)}</td>
                         <td>${result(latest,c) ?? "-"}</td>
                         <td>${percentile(latest,c) ?? "-"}</td>
@@ -259,8 +440,8 @@ function build() {
 
                     return `
                         <tr style="border-bottom:1px solid #1f2a3a;">
-                            <td>${cat}</td>
-                            <td>${bestGame.game_name}</td>
+                            <td>${cat_labels[cat]}</td>
+                            <td>${bestGame.name}</td>
                             <td>${bestVal.toFixed(2)}</td>
                             <td>LD${bestGame.ld}</td>
                         </tr>
@@ -286,11 +467,12 @@ function build() {
             <div style="margin-bottom: 40px;">
 
                 <!-- CATEGORY ROW (games left → right) -->
+
                 <table style="width:100%; border-collapse: collapse; margin-bottom: 10px;">
                     <thead>
                         <tr style="text-align:left; border-bottom:1px solid #2a3a4f;">
-                            <th style="width:120px;">${cat}</th>
-                            ${games.map(g => `<th title="LD${g.ld}">${g.game_name}</th>`).join("")}
+                            <th style="width:120px;font-size:18px;">${cat_labels[cat]}</th>
+                            ${games.map(g => `<th title="LD${g.ld}">${g.name}</th>`).join("")}
                         </tr>
                     </thead>
 
@@ -328,7 +510,7 @@ function build() {
             data: {
                 labels: games.map(g => "LD" + g.ld),
                 datasets: [{
-                    label: cat,
+                    label: cat_labels[cat],
                     data: games.map(g => avg(g, cat)),
                     borderWidth: 2,
                     tension: 0.3,
