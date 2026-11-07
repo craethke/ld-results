@@ -43,7 +43,7 @@ except ImportError:
 USERNAME = "cody-raethke"
 API_BASE = "https://api.ldjam.com/vx"
 
-TARGET_EVENTS = [53, 54, 55, 56, 57, 58, 59]
+TARGET_EVENTS = [53, 54, 55, 56, 57, 58, 59, 60]
 
 CATEGORIES = [
     "overall",
@@ -86,6 +86,7 @@ EVENT_META = {
     57: {"date": "Apr 2025", "theme": "Depths"},
     58: {"date": "Oct 2025", "theme": "Collector"},
     59: {"date": "Apr 2026", "theme": "Signal"},
+    60: {"date": "Oct 2026", "theme": "Old Tech"}
 }
 
 OUTPUT_DIR = Path(".")
@@ -356,6 +357,7 @@ def get_event_stats(ld_num, event_node_id):
         57: {"total": 1566, "jam": 1100, "compo": 400, "extra": 66},
         58: {"total": 1390, "jam": 980, "compo": 350, "extra": 60},
         59: {"total": 1400, "jam": 980, "compo": 360, "extra": 60},
+        60: {"total": 953, "jam": 736, "compo": 204, "extra": 13},
     }
 
     if stats["total"] < 100:
